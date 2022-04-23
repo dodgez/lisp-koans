@@ -49,8 +49,21 @@
 ;;;
 ;;; Your goal is to write the scoring function for Greed.
 
+(defun score-same (num rolls)
+  (cond
+    ((> rolls 2) (+ (if (eql num 1)
+                        1000
+                        (* num 100))
+                    (score-same num (- rolls 3))))
+    ((eql num 1) (* rolls 100))
+    ((eql num 5) (* rolls 50))
+    (t 0)))
+
 (defun score (&rest dice)
-  ____)
+  (loop for i from 1 to 6
+        sum (score-same i
+                        (length (remove-if-not #'(lambda (n) (eql n i))
+                                               dice)))))
 
 (define-test score-of-an-empty-list-is-zero
   (assert-equal 0 (score)))
